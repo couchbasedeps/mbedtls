@@ -1,3 +1,4 @@
+cmake_policy(SET CMP0076 OLD)
 set(THREADS_USE_PTHREADS_WIN32 true)
 find_package(Threads)
 
