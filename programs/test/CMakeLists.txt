@@ -1,3 +1,4 @@
+cmake_policy(SET CMP0076 OLD)
 set(libs
     mbedtls
 )
