@@ -1,4 +1,7 @@
-cmake_policy(SET CMP0076 OLD)
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13.0")
+    cmake_policy(SET CMP0076 OLD)
+endif()
+
 set(libs
     ${mbedtls_target}
 )
