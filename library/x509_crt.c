@@ -2213,22 +2213,22 @@ struct x509_crt_verify_string {
 };
 
 static const struct x509_crt_verify_string x509_crt_verify_strings[] = {
-    { MBEDTLS_X509_BADCERT_EXPIRED,       "The certificate validity has expired" },
-    { MBEDTLS_X509_BADCERT_REVOKED,       "The certificate has been revoked (is on a CRL)" },
+    { MBEDTLS_X509_BADCERT_EXPIRED,       "The certificate validity has expired." },
+    { MBEDTLS_X509_BADCERT_REVOKED,       "The certificate has been revoked (is on a CRL)." },
     { MBEDTLS_X509_BADCERT_CN_MISMATCH,
-      "The certificate Common Name (CN) does not match with the expected CN" },
+      "The certificate Common Name (CN) does not match with the expected CN." },
     { MBEDTLS_X509_BADCERT_NOT_TRUSTED,
-      "The certificate is not correctly signed by the trusted CA" },
-    { MBEDTLS_X509_BADCRL_NOT_TRUSTED,    "The CRL is not correctly signed by the trusted CA" },
-    { MBEDTLS_X509_BADCRL_EXPIRED,        "The CRL is expired" },
-    { MBEDTLS_X509_BADCERT_MISSING,       "Certificate was missing" },
-    { MBEDTLS_X509_BADCERT_SKIP_VERIFY,   "Certificate verification was skipped" },
-    { MBEDTLS_X509_BADCERT_OTHER,         "Other reason (can be used by verify callback)" },
-    { MBEDTLS_X509_BADCERT_FUTURE,        "The certificate validity starts in the future" },
-    { MBEDTLS_X509_BADCRL_FUTURE,         "The CRL is from the future" },
-    { MBEDTLS_X509_BADCERT_KEY_USAGE,     "Usage does not match the keyUsage extension" },
-    { MBEDTLS_X509_BADCERT_EXT_KEY_USAGE, "Usage does not match the extendedKeyUsage extension" },
-    { MBEDTLS_X509_BADCERT_NS_CERT_TYPE,  "Usage does not match the nsCertType extension" },
+      "The certificate is not correctly signed by the trusted CA." },
+    { MBEDTLS_X509_BADCRL_NOT_TRUSTED,    "The CRL is not correctly signed by the trusted CA." },
+    { MBEDTLS_X509_BADCRL_EXPIRED,        "The CRL is expired." },
+    { MBEDTLS_X509_BADCERT_MISSING,       "Certificate was missing." },
+    { MBEDTLS_X509_BADCERT_SKIP_VERIFY,   "Certificate verification was skipped." },
+    { MBEDTLS_X509_BADCERT_OTHER,         "Other reason (can be used by verify callback)." },
+    { MBEDTLS_X509_BADCERT_FUTURE,        "The certificate validity starts in the future." },
+    { MBEDTLS_X509_BADCRL_FUTURE,         "The CRL is from the future." },
+    { MBEDTLS_X509_BADCERT_KEY_USAGE,     "Usage does not match the keyUsage extension." },
+    { MBEDTLS_X509_BADCERT_EXT_KEY_USAGE, "Usage does not match the extendedKeyUsage extension." },
+    { MBEDTLS_X509_BADCERT_NS_CERT_TYPE,  "Usage does not match the nsCertType extension." },
     { MBEDTLS_X509_BADCERT_BAD_MD,        "The certificate is signed with an unacceptable hash." },
     { MBEDTLS_X509_BADCERT_BAD_PK,
       "The certificate is signed with an unacceptable PK alg (eg RSA vs ECDSA)." },
@@ -2254,8 +2254,13 @@ int mbedtls_x509_crt_verify_info(char *buf, size_t size, const char *prefix,
         if ((flags & cur->code) == 0) {
             continue;
         }
+        
+        if (p != buf ) {
+            ret = mbedtls_snprintf(p, n, " ");
+            MBEDTLS_X509_SAFE_SNPRINTF;
+        }
 
-        ret = mbedtls_snprintf(p, n, "%s%s\n", prefix, cur->string);
+        ret = mbedtls_snprintf(p, n, "%s%s", prefix, cur->string);
         MBEDTLS_X509_SAFE_SNPRINTF;
         flags ^= cur->code;
     }
