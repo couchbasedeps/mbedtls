@@ -2259,6 +2259,7 @@
  * Uncomment this to allow your own alternate threading implementation.
  */
 //#define MBEDTLS_THREADING_ALT
+// FIXME: Need to define MBEDTLS_THREADING_ALT on Windows and implement mutex functions --Jens
 
 /**
  * \def MBEDTLS_THREADING_PTHREAD
@@ -2269,7 +2270,9 @@
  *
  * Uncomment this to enable pthread mutexes.
  */
-//#define MBEDTLS_THREADING_PTHREAD
+#ifndef _WIN32
+#define MBEDTLS_THREADING_PTHREAD
+#endif
 
 /**
  * \def MBEDTLS_USE_PSA_CRYPTO
@@ -3622,7 +3625,9 @@
  *
  * Enable this layer to allow use of mutexes within Mbed TLS
  */
-//#define MBEDTLS_THREADING_C
+#ifndef _WIN32  // FIXME: Remove this when implementing threading for Windows --Jens
+#define MBEDTLS_THREADING_C
+#endif
 
 /**
  * \def MBEDTLS_TIMING_C
