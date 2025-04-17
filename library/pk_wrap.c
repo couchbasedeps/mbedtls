@@ -525,6 +525,9 @@ const mbedtls_pk_info_t mbedtls_rsa_info = {
     .ctx_alloc_func = rsa_alloc_wrap,
     .ctx_free_func = rsa_free_wrap,
     .debug_func = rsa_debug,
+#if defined(MBEDTLS_PK_RSA_ALT_SUPPORT)
+    .write_pubkey_func = NULL,
+#endif
 };
 #endif /* MBEDTLS_RSA_C */
 
@@ -1159,6 +1162,9 @@ const mbedtls_pk_info_t mbedtls_eckey_info = {
     .ctx_free_func = eckey_free_wrap,
 #endif /* MBEDTLS_PK_USE_PSA_EC_DATA */
     .debug_func = eckey_debug,
+#if defined(MBEDTLS_PK_RSA_ALT_SUPPORT)
+    .write_pubkey_func = NULL,
+#endif
 };
 
 /*
@@ -1192,6 +1198,9 @@ const mbedtls_pk_info_t mbedtls_eckeydh_info = {
     .ctx_free_func = eckey_free_wrap,    /* Same underlying key structure */
 #endif /* MBEDTLS_PK_USE_PSA_EC_DATA */
     .debug_func = eckey_debug,            /* Same underlying key structure */
+#if defined(MBEDTLS_PK_RSA_ALT_SUPPORT)
+    .write_pubkey_func = NULL,
+#endif
 };
 
 #if defined(MBEDTLS_PK_CAN_ECDSA_SOME)
@@ -1284,6 +1293,9 @@ const mbedtls_pk_info_t mbedtls_ecdsa_info = {
     .ctx_free_func = eckey_free_wrap,   /* Compatible key structures */
 #endif /* MBEDTLS_PK_USE_PSA_EC_DATA */
     .debug_func = eckey_debug,        /* Compatible key structures */
+#if defined(MBEDTLS_PK_RSA_ALT_SUPPORT)
+    .write_pubkey_func = NULL,
+#endif
 };
 #endif /* MBEDTLS_PK_CAN_ECDSA_SOME */
 #endif /* MBEDTLS_PK_HAVE_ECC_KEYS */
@@ -1346,6 +1358,14 @@ static int rsa_alt_decrypt_wrap(mbedtls_pk_context *pk,
 
     return rsa_alt->decrypt_func(rsa_alt->key,
                                  olen, input, output, osize);
+}
+
+static int rsa_alt_write_pubkey_wrap( void *ctx, uint8_t **p, uint8_t *start)
+{
+    mbedtls_rsa_alt_context *rsa_alt = (mbedtls_rsa_alt_context *) ctx;
+    if( rsa_alt->write_pubkey_func == NULL)
+        return( MBEDTLS_ERR_PK_FEATURE_UNAVAILABLE );
+    return( rsa_alt->write_pubkey_func(rsa_alt->key, p, start) );
 }
 
 #if defined(MBEDTLS_RSA_C)
@@ -1426,6 +1446,7 @@ const mbedtls_pk_info_t mbedtls_rsa_alt_info = {
     .ctx_alloc_func = rsa_alt_alloc_wrap,
     .ctx_free_func = rsa_alt_free_wrap,
     .debug_func = NULL,
+    .write_pubkey_func = rsa_alt_write_pubkey_wrap,
 };
 #endif /* MBEDTLS_PK_RSA_ALT_SUPPORT */
 
@@ -1478,6 +1499,9 @@ const mbedtls_pk_info_t mbedtls_ecdsa_opaque_info = {
     .ctx_alloc_func = NULL,
     .ctx_free_func = NULL,
     .debug_func = NULL,
+#if defined(MBEDTLS_PK_RSA_ALT_SUPPORT)
+    .write_pubkey_func = NULL,
+#endif
 };
 #endif /* MBEDTLS_PK_HAVE_ECC_KEYS */
 
