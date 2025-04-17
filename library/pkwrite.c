@@ -15,6 +15,7 @@
 #include "mbedtls/platform_util.h"
 #include "mbedtls/error.h"
 #include "pk_internal.h"
+#include "pk_wrap.h"
 
 #include <string.h>
 
@@ -424,6 +425,11 @@ int mbedtls_pk_write_pubkey(unsigned char **p, unsigned char *start,
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     size_t len = 0;
 
+#if defined(MBEDTLS_PK_RSA_ALT_SUPPORT)
+    if( key->pk_info->write_pubkey_func )
+        return key->pk_info->write_pubkey_func(key->pk_ctx, p, start);
+    else
+#endif
 #if defined(MBEDTLS_RSA_C)
     if (mbedtls_pk_get_type(key) == MBEDTLS_PK_RSA) {
         MBEDTLS_ASN1_CHK_ADD(len, mbedtls_rsa_write_pubkey(mbedtls_pk_rsa(*key), start, p));
@@ -477,6 +483,12 @@ int mbedtls_pk_write_pubkey_der(const mbedtls_pk_context *key, unsigned char *bu
     MBEDTLS_ASN1_CHK_ADD(len, mbedtls_asn1_write_tag(&c, buf, MBEDTLS_ASN1_BIT_STRING));
 
     pk_type = pk_get_type_ext(key);
+    #if defined(MBEDTLS_PK_RSA_ALT_SUPPORT)
+    if( pk_type == MBEDTLS_PK_RSA_ALT )
+    {
+        pk_type = MBEDTLS_PK_RSA;
+    }
+    #endif /* MBEDTLS_PK_RSA_ALT_SUPPORT */
 
 #if defined(MBEDTLS_PK_HAVE_ECC_KEYS)
     if (pk_get_type_ext(key) == MBEDTLS_PK_ECKEY) {
