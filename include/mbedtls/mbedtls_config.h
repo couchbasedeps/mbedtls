@@ -2183,7 +2183,7 @@
  * Uncomment this to allow your own alternate threading implementation.
  */
 //#define MBEDTLS_THREADING_ALT
-// FIXME: Need to define MBEDTLS_THREADING_ALT on Windows and implement mutex functions --Jens
+// NOTE: Use config.py to uncomment this before Windows build
 
 /**
  * \def MBEDTLS_THREADING_PTHREAD
@@ -2194,9 +2194,8 @@
  *
  * Uncomment this to enable pthread mutexes.
  */
-#ifndef _WIN32
 #define MBEDTLS_THREADING_PTHREAD
-#endif
+// NOTE: Use config.py to comment this out before Windows build
 
 /**
  * \def MBEDTLS_USE_PSA_CRYPTO
@@ -3787,9 +3786,7 @@
  *
  * Enable this layer to allow use of mutexes within Mbed TLS
  */
-#ifndef _WIN32  // FIXME: Remove this when implementing threading for Windows --Jens
 #define MBEDTLS_THREADING_C
-#endif
 
 /**
  * \def MBEDTLS_TIMING_C
